@@ -102,4 +102,36 @@ class MainActivity : AppCompatActivity() {
         }
         return resultado
     }
+
+    private fun mostrarResultado(ciudad: String, ofertasFiltradas: List<Oferta>) {
+        val numeroOfertas = ofertasFiltradas.size
+        val salarioTotal = ofertasFiltradas.sumOf { it.salario }
+        val salarioMedio = if (ofertasFiltradas.size > 0) {
+            ofertasFiltradas.map { it.salario }.average()
+        } else {
+            0.0
+        }
+        val salarioMaximo = ofertasFiltradas.maxOfOrNull { it.salario } ?: 0
+
+        textoCiudadSeleccionada.text = "Ciudad seleccionada: $ciudad"
+        textoNumeroOfertas.text = "Numero de ofertas: $numeroOfertas"
+        textoSalarioTotal.text = "Salario total: ${formatearSalario(salarioTotal)}"
+        textoSalarioMedio.text = "Salario medio: ${formatearSalario(salarioMedio.toInt())}"
+        textoSalarioMaximo.text = "Salario maximo: ${formatearSalario(salarioMaximo)}"
+
+        contenedorOfertas.removeAllViews()
+
+        ofertasFiltradas.forEachIndexed { indice, oferta ->
+            val textoOferta = TextView(this)
+            textoOferta.text = "${indice + 1}. ${oferta.puesto}\n" +
+                    "${oferta.empresa} - ${oferta.ciudad} - ${formatearSalario(oferta.salario)}"
+            textoOferta.textSize = 16f
+            textoOferta.setPadding(0, 0, 0, 24)
+            contenedorOfertas.addView(textoOferta)
+        }
+    }
+
+    private fun formatearSalario(salario: Int): String {
+        return "%,d".format(salario).replace(",", ".") + " €"
+    }
 }
