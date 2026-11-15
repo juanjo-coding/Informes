@@ -7,6 +7,7 @@ import android.widget.ProgressBar
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import android.widget.ArrayAdapter
 
 class MainActivity : AppCompatActivity() {
 
@@ -47,5 +48,19 @@ class MainActivity : AppCompatActivity() {
         textoCantidadMadrid = findViewById(R.id.textoCantidadMadrid)
         textoCantidadAlicante = findViewById(R.id.textoCantidadAlicante)
         contenedorOfertas = findViewById(R.id.contenedorOfertas)
+        configurarSpinner()
+    }
+
+    private fun configurarSpinner() {
+        val ciudades = arrayOf("Todas", "Valencia", "Madrid", "Alicante")
+        val adaptador = ArrayAdapter(
+            this,
+            android.R.layout.simple_spinner_item,
+            ciudades
+        )
+        adaptador.setDropDownViewResource(
+            android.R.layout.simple_spinner_dropdown_item
+        )
+        spinnerCiudad.adapter = adaptador
     }
 }
