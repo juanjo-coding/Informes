@@ -52,6 +52,12 @@ class MainActivity : AppCompatActivity() {
         contenedorOfertas = findViewById(R.id.contenedorOfertas)
         configurarSpinner()
         ofertas.addAll(cargarOfertas())
+
+        botonGenerarInforme.setOnClickListener {
+            val ciudadSeleccionada = spinnerCiudad.selectedItem.toString()
+            val ofertasFiltradas = filtrarOfertasPorCiudad(ciudadSeleccionada)
+            mostrarResultado(ciudadSeleccionada, ofertasFiltradas)
+        }
     }
 
     private fun configurarSpinner() {
@@ -86,5 +92,14 @@ class MainActivity : AppCompatActivity() {
             listaOfertas.add(oferta)
         }
         return listaOfertas
+    }
+
+    private fun filtrarOfertasPorCiudad(ciudad: String): List<Oferta> {
+        val resultado = if (ciudad == "Todas") {
+            ofertas
+        } else {
+            ofertas.filter { it.ciudad == ciudad }
+        }
+        return resultado
     }
 }
