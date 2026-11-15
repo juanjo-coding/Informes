@@ -107,7 +107,8 @@ class MainActivity : AppCompatActivity() {
         val numeroOfertas = ofertasFiltradas.size
         val salarioTotal = ofertasFiltradas.sumOf { it.salario }
         val salarioMedio = if (ofertasFiltradas.size > 0) {
-            ofertasFiltradas.map { it.salario }.average()
+            ofertasFiltradas.map { it.salario }
+                .average()
         } else {
             0.0
         }
@@ -118,6 +119,8 @@ class MainActivity : AppCompatActivity() {
         textoSalarioTotal.text = "Salario total: ${formatearSalario(salarioTotal)}"
         textoSalarioMedio.text = "Salario medio: ${formatearSalario(salarioMedio.toInt())}"
         textoSalarioMaximo.text = "Salario maximo: ${formatearSalario(salarioMaximo)}"
+
+        mostrarGrafico(ofertasFiltradas)
 
         contenedorOfertas.removeAllViews()
 
@@ -131,7 +134,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun mostrarGrafico(ofertasFiltradas: List<Oferta>) {
+        val ofertasValencia = ofertasFiltradas.count { it.ciudad == "Valencia" }
+        val ofertasMadrid = ofertasFiltradas.count { it.ciudad == "Madrid" }
+        val ofertasAlicante = ofertasFiltradas.count { it.ciudad == "Alicante" }
+
+        val valorMaximo = maxOf(ofertasValencia, ofertasMadrid, ofertasAlicante, 1)
+
+        barraValencia.max = valorMaximo
+        barraMadrid.max = valorMaximo
+        barraAlicante.max = valorMaximo
+
+        barraValencia.progress = ofertasValencia
+        barraMadrid.progress = ofertasMadrid
+        barraAlicante.progress = ofertasAlicante
+
+        textoCantidadValencia.text = ofertasValencia.toString()
+        textoCantidadMadrid.text = ofertasMadrid.toString()
+        textoCantidadAlicante.text = ofertasAlicante.toString()
+    }
+
     private fun formatearSalario(salario: Int): String {
-        return "%,d".format(salario).replace(",", ".") + " €"
+        return "%,d".format(salario)
+            .replace(",", ".") + " €"
     }
 }
