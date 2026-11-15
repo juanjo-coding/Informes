@@ -8,6 +8,7 @@ import android.widget.Spinner
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import android.widget.ArrayAdapter
+import org.json.JSONArray
 
 class MainActivity : AppCompatActivity() {
 
@@ -27,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var textoCantidadMadrid: TextView
     private lateinit var textoCantidadAlicante: TextView
     private lateinit var contenedorOfertas: LinearLayout
+    private val ofertas = ArrayList<Oferta>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +51,7 @@ class MainActivity : AppCompatActivity() {
         textoCantidadAlicante = findViewById(R.id.textoCantidadAlicante)
         contenedorOfertas = findViewById(R.id.contenedorOfertas)
         configurarSpinner()
+        ofertas.addAll(cargarOfertas())
     }
 
     private fun configurarSpinner() {
@@ -62,5 +65,26 @@ class MainActivity : AppCompatActivity() {
             android.R.layout.simple_spinner_dropdown_item
         )
         spinnerCiudad.adapter = adaptador
+    }
+
+    private fun cargarOfertas(): ArrayList<Oferta> {
+        val listaOfertas = ArrayList<Oferta>()
+        val textoJson = assets.open("ofertas.json")
+            .bufferedReader()
+            .use { it.readText() }
+        val arrayJson = JSONArray(textoJson)
+
+        for (i in 0 until arrayJson.length()) {
+            val objetoJson = arrayJson.getJSONObject(i)
+            val oferta = Oferta(
+                objetoJson.getInt("id"),
+                objetoJson.getString("puesto"),
+                objetoJson.getString("empresa"),
+                objetoJson.getString("ciudad"),
+                objetoJson.getInt("salario")
+            )
+            listaOfertas.add(oferta)
+        }
+        return listaOfertas
     }
 }
